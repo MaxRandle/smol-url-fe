@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import {
   Button,
   Container,
+  Link,
   makeStyles,
   TextField,
   Typography,
 } from "@material-ui/core";
 import clsx from "clsx";
+import Axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   flexColContainer: {
@@ -18,18 +20,23 @@ const useStyles = makeStyles((theme) => ({
   flexColItem: {
     marginBottom: theme.spacing(3),
   },
-  header: {
+  text: {
     textAlign: "center",
   },
-  // h3: {
-  //   marginTop: "calc((1 - #{$line-height}) * 0.5em)",
-  // },
-  // h5: {
-  //   lineHeight: "24px",
-  // },
+  h3: {
+    // marginTop: "-12px",
+    // marginBottom: "8px",
+    // verticalAlign: "text-bottom",
+    // msTextAutospace: "",
+  },
+  h5: {
+    // marginTop: "-8px",
+    // marginBottom: "12px",
+  },
   button: {
     textTransform: "none",
     borderRadius: "50%",
+    width: "64px",
     height: "64px",
     "&:hover": {
       WebkitTransform: "scale(0.8)",
@@ -39,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+
+const http = "http://";
+const url = "localhost:5050";
 
 function App() {
   const classes = useStyles();
@@ -53,6 +63,8 @@ function App() {
     helperText: "",
   });
   const [firstRender, setFirstRender] = useState(true);
+  const [error, setError] = useState();
+  const [response, setResponse] = useState();
 
   const longUrlTests = [
     {
@@ -67,11 +79,11 @@ function App() {
   const smolTests = [
     {
       test: (value) => /^[\w-]*$/i.test(value),
-      onFailFeedback: "contains invalid characters",
+      onFailFeedback: "smol contains invalid characters",
     },
     {
       test: (value) => value.length <= 5,
-      onFailFeedback: "not smol enough",
+      onFailFeedback: "smol not smol enough",
     },
   ];
 
@@ -104,18 +116,37 @@ function App() {
     setSmolUrl(newSmolUrl);
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = async () => {
+    try {
+      const res = await Axios({
+        method: "POST",
+        url: `${http}${url}/url`, // change port in prod
+        headers: {
+          "content-type": "application/json",
+        },
+        data: {
+          smol: smolUrl.value || undefined,
+          url: longUrl.value,
+        },
+      });
+      setResponse(res.data);
+      setError();
+    } catch (err) {
+      setResponse();
+      setError(err);
+    }
+  };
 
   return (
     <Container className={clsx(classes.flexColContainer)} maxWidth="xs">
       <Typography
-        className={clsx(classes.flexColItem, classes.header, classes.h3)}
+        className={clsx(classes.flexColItem, classes.text, classes.h3)}
         variant="h3"
       >
         smol url
       </Typography>
       <Typography
-        className={clsx(classes.flexColItem, classes.header, classes.h5)}
+        className={clsx(classes.flexColItem, classes.text, classes.h5)}
         variant="h5"
       >
         for urls that should be smolr
@@ -144,6 +175,22 @@ function App() {
       >
         smol
       </Button>
+      {response && (
+        <>
+          <Typography className={clsx(classes.flexColItem, classes.text)}>
+            your new url is{" "}
+            <Link
+              color="inherit"
+              href={`${url}/${response.smol}`}
+            >{`${url}/${response.smol}`}</Link>
+          </Typography>
+        </>
+      )}
+      {error && (
+        <Typography className={clsx(classes.flexColItem, classes.text)}>
+          {error?.response?.data?.message}
+        </Typography>
+      )}
     </Container>
   );
 }
