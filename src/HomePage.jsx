@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Button,
   Container,
-  IconButton,
   Link,
   makeStyles,
   TextField,
@@ -36,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     // marginBottom: "12px",
   },
   button: {
-    textTransform: "none",
     borderRadius: "50%",
     width: "64px",
     height: "64px",
@@ -47,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
       transition: "0.3s ease",
     },
   },
+
   iconButton: {
     borderRadius: "50%",
     width: "64px",
@@ -57,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 const http = "http://";
 const url = "localhost:5050";
 
-function App() {
+const HomePage = () => {
   const classes = useStyles();
   const [longUrl, setLongUrl] = useState({
     value: "",
@@ -138,10 +137,24 @@ function App() {
       });
       setResponse(res.data);
       setError();
+      setLongUrl({
+        value: "",
+        error: false,
+        helperText: "",
+      });
     } catch (err) {
       setResponse();
       setError(err);
     }
+  };
+
+  const copyToClipboard = (str) => {
+    const ele = document.createElement("textarea");
+    ele.value = str;
+    document.body.appendChild(ele);
+    ele.select();
+    document.execCommand("copy");
+    document.body.removeChild(ele);
   };
 
   return (
@@ -192,16 +205,18 @@ function App() {
               href={`${url}/${response.smol}`}
             >{`${url}/${response.smol}`}</Link>
           </Typography>
+          {/* <Tooltip title="copy to clipboard"> */}
           <Button
             className={clsx(classes.flexColItem, classes.iconButton)}
             variant="outlined"
             color="secondary"
             onClick={() => {
-              // TODO: upload the smol url to clipboard
+              copyToClipboard(`${url}/${response.smol}`);
             }}
           >
             <FileCopyOutlined />
           </Button>
+          {/* </Tooltip> */}
         </>
       )}
       {error && (
@@ -211,6 +226,6 @@ function App() {
       )}
     </Container>
   );
-}
+};
 
-export default App;
+export default HomePage;
