@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Button,
   Container,
+  IconButton,
   Link,
   makeStyles,
   TextField,
@@ -9,6 +10,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import Axios from "axios";
+import { FileCopyOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   flexColContainer: {
@@ -44,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
       transform: "scale(0.8)",
       transition: "0.3s ease",
     },
+  },
+  iconButton: {
+    borderRadius: "50%",
+    width: "64px",
+    height: "64px",
   },
 }));
 
@@ -153,6 +160,7 @@ function App() {
       </Typography>
       <TextField
         className={clsx(classes.flexColItem)}
+        autoFocus
         fullWidth
         variant="outlined"
         placeholder="paste longboi here"
@@ -178,12 +186,22 @@ function App() {
       {response && (
         <>
           <Typography className={clsx(classes.flexColItem, classes.text)}>
-            your new url is{" "}
+            your new smol url is{" "}
             <Link
               color="inherit"
               href={`${url}/${response.smol}`}
             >{`${url}/${response.smol}`}</Link>
           </Typography>
+          <Button
+            className={clsx(classes.flexColItem, classes.iconButton)}
+            variant="outlined"
+            color="secondary"
+            onClick={() => {
+              // TODO: upload the smol url to clipboard
+            }}
+          >
+            <FileCopyOutlined />
+          </Button>
         </>
       )}
       {error && (
