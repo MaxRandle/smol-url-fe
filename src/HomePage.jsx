@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
       transition: "0.3s ease",
     },
   },
-
   iconButton: {
     borderRadius: "50%",
     width: "64px",
@@ -53,8 +52,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const http = "http://";
-const url = "localhost:5050";
 
 const HomePage = () => {
   const classes = useStyles();
@@ -126,7 +123,7 @@ const HomePage = () => {
     try {
       const res = await Axios({
         method: "POST",
-        url: `${http}${url}/url`, // change port in prod
+        url: `/url`, // change port in prod
         headers: {
           "content-type": "application/json",
         },
@@ -202,8 +199,8 @@ const HomePage = () => {
             your new smol url is{" "}
             <Link
               color="inherit"
-              href={`${url}/${response.smol}`}
-            >{`${url}/${response.smol}`}</Link>
+              href={response.link}
+            >{response.link}</Link>
           </Typography>
           {/* <Tooltip title="copy to clipboard"> */}
           <Button
@@ -211,7 +208,7 @@ const HomePage = () => {
             variant="outlined"
             color="secondary"
             onClick={() => {
-              copyToClipboard(`${url}/${response.smol}`);
+              copyToClipboard(response.link);
             }}
           >
             <FileCopyOutlined />
