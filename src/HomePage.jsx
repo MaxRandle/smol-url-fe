@@ -52,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const HomePage = () => {
   const classes = useStyles();
   const [longUrl, setLongUrl] = useState({
@@ -139,6 +138,12 @@ const HomePage = () => {
         error: false,
         helperText: "",
       });
+      setSmolUrl({
+        value: "",
+        error: false,
+        helperText: "",
+      });
+      setFirstRender(true);
     } catch (err) {
       setResponse();
       setError(err);
@@ -197,10 +202,9 @@ const HomePage = () => {
         <>
           <Typography className={clsx(classes.flexColItem, classes.text)}>
             your new smol url is{" "}
-            <Link
-              color="inherit"
-              href={response.link}
-            >{response.link}</Link>
+            <Link color="inherit" href={response.link}>
+              {response.link}
+            </Link>
           </Typography>
           {/* <Tooltip title="copy to clipboard"> */}
           <Button
